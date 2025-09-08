@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fitness Tracker</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+            background-color: #f8f9fa;
+            padding-bottom: 20px;
+        }
+        
+        .header {
+            background: white;
+            padding: 15px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .header h1 {
+            color: #1f2937;
+            font-size: 20px;
+            margin-bottom: 10px;
+        }
+        
+        .date-streak {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .date-input {
+            padding: 8px 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+        
+        .streak {
+            background: #dcfce7;
+            color: #166534;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 500;
+        }
+        
+        .tabs {
+            background: white;
+            display: flex;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        
+        .tab {
+            flex: 1;
+            padding: 15px;
+            text-align: center;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+            color: #6b7280;
+            border-bottom: 2px solid transparent;
+        }
+        
+        .tab.active {
+            color: #2563eb;
+            border-bottom-color: #2563eb;
+            font-weight: 500;
+        }
+        
+        .container {
+            padding: 15px;
+        }
+        
+        .section {
+            background: white;
+            margin-bottom: 15px;
+            border-radius: 12px;
+            padding: 15px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        
+        .section-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: #1f2937;
+        }
+        
+        .exercise-item {
+            display: flex;
+            align-items: center;
+            padding: 12px;
+            margin-bottom: 8px;
+            background: #f9fafb;
+            border-radius: 8px;
+            border: 2px solid transparent;
+        }
+        
+        .exercise-item:hover {
+            background: #f3f4f6;
+        }
+        
+        .exercise-checkbox {
+            width: 20px;
+            height: 20px;
+            margin-right: 12px;
+            cursor: pointer;
+        }
+        
+        .exercise-info {
+            flex: 1;
+        }
+        
+        .exercise-name {
+            font-weight: 500;
+            color: #1f2937;
+            margin-bottom: 2px;
+        }
+        
+        .exercise-reps {
+            font-size: 12px;
+            color: #6b7280;
+        }
+        
+        .input-group {
+            margin-bottom: 15px;
+        }
+        
+        .input-label {
+            display: block;
+            font-weight: 500;
+            margin-bottom: 8px;
+            color: #374151;
+        }
+        
+        .input-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .number-input {
+            width: 80px;
+            padding: 10px;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            text-align: center;
+            font-size: 16px;
+        }
+        
+        .wide-input {
+            width: 100%;
+        }
+        
+        .input-unit {
+            color: #6b7280;
+            font-size: 14px;
+        }
+        
+        .input-hint {
+            font-size: 12px;
+            color: #6b7280;
+            margin-top: 4px;
+        }
+        
+        .progress-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+        }
+        
+        .progress-item {
+            padding: 8px;
+            border-radius: 6px;
+            text-align: center;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        
+        .progress-complete {
+            background: #dcfce7;
+            color: #166534;
+        }
+        
+        .progress-pending {
+            background: #f3f4f6;
+            color: #6b7280;
+        }
+        
+        .stats-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 56px;
+            height: 56px;
+            background: #10b981;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 18px;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+        }
+        
+        .analytics {
+            display: none;
+        }
+        
+        .analytics.active {
+            display: block;
+        }
+        
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .stat-label {
+            color: #6b7280;
+            font-size: 14px;
+        }
+        
+        .back-btn {
+            background: #2563eb;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-bottom: 20px;
+        }
+        
+        .orange { background-color: #fff7ed; }
+        .green { background-color: #f0fdf4; }
+        .blue { background-color: #eff6ff; }
+        .cyan { background-color: #ecfeff; }
+        .purple { background-color: #faf5ff; }
+        
+        .hidden { display: none; }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <!-- Header -->
+        <div class="header">
+            <h1>💪 Fitness Tracker</h1>
+            <div class="date-streak">
+                <input type="date" id="dateInput" class="date-input">
+                <div class="streak">🔥 <span id="streakCount">0</span> day streak</div>
+            </div>
+        </div>
+        
+        <!-- Main View -->
+        <div id="mainView">
+            <!-- Tabs -->
+            <div class="tabs">
+                <button class="tab active" onclick="switchTab('exercises')">💪 Exercises</button>
+                <button class="tab" onclick="switchTab('tracking')">📊 Tracking</button>
+            </div>
+            
+            <!-- Content -->
+            <div class="container">
+                <!-- Exercises Tab -->
+                <div id="exercisesTab">
+                    <!-- Morning Exercises -->
+                    <div class="section orange">
+                        <div class="section-title">☀️ Morning Exercises (20 mins)</div>
+                        <div class="exercise-item">
+                            <input type="checkbox" class="exercise-checkbox" data-exercise="squats">
+                            <div class="exercise-info">
+                                <div class="exercise-name">🏋️ Squats</div>
+                                <div class="exercise-reps">12 reps</div>
+                            </div>
+                        </div>
+                        <div class="exercise-item">
+                            <input type="checkbox" class="exercise-checkbox" data-exercise="pushups">
+                            <div class="exercise-info">
+                                <div class="exercise-name">💪 Push-ups</div>
+                                <div class="exercise-reps">10 reps</div>
+                            </div>
+                        </div>
+                        <div class="exercise-item">
+                            <input type="checkbox" class="exercise-checkbox" data-exercise="gluteBridge">
+                            <div class="exercise-info">
+                                <div class="exercise-name">🍑 Glute Bridge</div>
+                                <div class="exercise-reps">12 reps</div>
+                            </div>
+                        </div>
+                        <div class="exercise-item">
+                            <input type="checkbox" class="exercise-checkbox" data-exercise="plank">
+                            <div class="exercise-info">
+                                <div class="exercise-name">🏃 Plank</div>
+                                <div class="exercise-reps">20-30 sec</div>
+                            </div>
+                        </div>
+                        <div class="exercise-item">
+                            <input type="checkbox" class="exercise-checkbox" data-exercise="sideLegRaises">
+                            <div class="exercise-info">
+                                <div class="exercise-name">🦵 Side Leg Raises</div>
+                                <div class="exercise-reps">10 each side</div>
+                            </div>
+                        </div>
+                        <div class="exercise-item">
+                            <input type="checkbox" class="exercise-checkbox" data-exercise="armCircles">
+                            <div class="exercise-info">
+                                <div class="exercise-name">🔄 Arm Circles</div>
+                                <div class="exercise-reps">10 forward + 10 back</div>
+                            </div>
+                        </div>
+                        <div class="exercise-item">
+                            <input type="checkbox" class="exercise-checkbox" data-exercise="stretching">
+                            <div class="exercise-info">
+                                <div class="exercise-name">🧘 Stretching</div>
+                                <div class="exercise-reps">3-4 mins</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Evening Walk -->
+                    <div class="section green">
+                        <div class="section-title">🌙 Evening Walk</div>
+                        <div class="exercise-item">
+                            <input type="checkbox" class="exercise-checkbox" data-exercise="eveningWalk">
+                            <div class="exercise-info">
+                                <div class="exercise-name">🚶‍♂️ 60-minute brisk walk</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Bonus Movement -->
+                    <div class="section blue">
+                        <div class="section-title">➕ Bonus Movement</div>
+                        <div class="exercise-item">
+                            <input type="checkbox" class="exercise-checkbox" data-exercise="shortWalks">
+                            <div class="exercise-info">
+                                <div class="exercise-name">⏱️ Short walks</div>
+                                <div class="exercise-reps">5-7 mins every 60-90 mins</div>
+                            </div>
+                        </div>
+                        <div class="exercise-item">
+                            <input type="checkbox" class="exercise-checkbox" data-exercise="lunchWalk">
+                            <div class="exercise-info">
+                                <div class="exercise-name">🍽️ Lunch walk</div>
+                                <div class="exercise-reps">10-12 mins after lunch</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Tracking Tab -->
+                <div id="trackingTab" class="hidden">
+                    <div class="section cyan">
+                        <div class="input-group">
+                            <label class="input-label">💧 Water Intake</label>
+                            <div class="input-row">
+                                <input type="number" id="waterInput" class="number-input" min="0" max="20" value="0">
+                                <span class="input-unit">glasses</span>
+                            </div>
+                            <div class="input-hint">= <span id="waterLiters">0.0</span>L (Goal: 3L = 12 glasses)</div>
+                        </div>
+                    </div>
+                    
+                    <div class="section purple">
+                        <div class="input-group">
+                            <label class="input-label">😴 Sleep Hours</label>
+                            <div class="input-row">
+                                <input type="number" id="sleepInput" class="number-input" min="0" max="12" step="0.5" value="0">
+                                <span class="input-unit">hours</span>
+                            </div>
+                            <div class="input-hint">Goal: 8+ hours</div>
+                        </div>
+                    </div>
+                    
+                    <div class="section">
+                        <div class="input-group">
+                            <label class="input-label">👟 Steps</label>
+                            <input type="number" id="stepsInput" class="number-input wide-input" min="0" value="0">
+                        </div>
+                        
+                        <div class="input-group">
+                            <label class="input-label">📍 Distance (km)</label>
+                            <input type="number" id="distanceInput" class="number-input wide-input" min="0" step="0.1" value="0">
+                        </div>
+                        
+                        <div class="input-group">
+                            <label class="input-label">🔥 Calories</label>
+                            <input type="number" id="caloriesInput" class="number-input wide-input" min="0" value="0">
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Progress Summary -->
+                <div class="section">
+                    <div class="section-title">📈 Today's Progress</div>
+                    <div class="progress-grid" id="progressGrid">
+                        <!-- Progress items will be added dynamically -->
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Analytics View -->
+        <div id="analyticsView" class="analytics">
+            <div class="header">
+                <button class="back-btn" onclick="showMain()">← Back</button>
+                <h1>📊 Analytics</h1>
+            </div>
+            <div class="container">
+                <div class="stat-card">
+                    <div class="stat-value" id="analyticsStreak">0</div>
+                    <div class="stat-label">Day Streak</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="completionRate">0%</div>
+                    <div class="stat-label">7-Day Completion Rate</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="avgWater">0.0L</div>
+                    <div class="stat-label">Average Water (7 days)</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="avgSleep">0.0h</div>
+                    <div class="stat-label">Average Sleep (7 days)</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Stats Button -->
+        <button class="stats-btn" onclick="showAnalytics()">📊</button>
+    </div>
+
+    <script>
+        // Global state
+        let currentDate = new Date().toISOString().split('T')[0];
+        let data = {};
+        let currentTab = 'exercises';
+        
+        // Initialize app
+        function init() {
+            // Load data from localStorage
+            const saved = localStorage.getItem('fitnessTrackerData');
+            if (saved) {
+                data = JSON.parse(saved);
+            }
+            
+            // Set today's date
+            document.getElementById('dateInput').value = currentDate;
+            
+            // Load today's data
+            loadTodayData();
+            
+            // Add event listeners
+            addEventListeners();
+            
+            // Update display
+            updateDisplay();
+        }
+        
+        function addEventListeners() {
+            // Date change
+            document.getElementById('dateInput').addEventListener('change', (e) => {
+                currentDate = e.target.value;
+                loadTodayData();
+                updateDisplay();
+            });
+            
+            // Exercise checkboxes
+            document.querySelectorAll('.exercise-checkbox').forEach(checkbox => {
+                checkbox.addEventListener('change', (e) => {
+                    const exercise = e.target.dataset.exercise;
+                    saveExercise(exercise, e.target.checked);
+                    updateDisplay();
+                });
+            });
+            
+            // Number inputs
+            ['waterInput', 'sleepInput', 'stepsInput', 'distanceInput', 'caloriesInput'].forEach(inputId => {
+                document.getElementById(inputId).addEventListener('input', (e) => {
+                    const field = inputId.replace('Input', '');
+                    const value = parseFloat(e.target.value) || 0;
+                    saveData(field, value);
+                    updateDisplay();
+                });
+            });
+        }
+        
+        function getTodayData() {
+            if (!data[currentDate]) {
+                data[currentDate] = {
+                    exercises: {
+                        squats: false,
+                        pushups: false,
+                        gluteBridge: false,
+                        plank: false,
+                        sideLegRaises: false,
+                        armCircles: false,
+                        stretching: false,
+                        eveningWalk: false,
+                        shortWalks: false,
+                        lunchWalk: false
+                    },
+                    water: 0,
+                    sleep: 0,
+                    steps: 0,
+                    distance: 0,
+                    calories: 0
+                };
+            }
+            return data[currentDate];
+        }
+        
+        function loadTodayData() {
+            const todayData = getTodayData();
+            
+            // Load exercises
+            document.querySelectorAll('.exercise-checkbox').forEach(checkbox => {
+                const exercise = checkbox.dataset.exercise;
+                checkbox.checked = todayData.exercises[exercise] || false;
+            });
+            
+            // Load numbers
+            document.getElementById('waterInput').value = todayData.water || 0;
+            document.getElementById('sleepInput').value = todayData.sleep || 0;
+            document.getElementById('stepsInput').value = todayData.steps || 0;
+            document.getElementById('distanceInput').value = todayData.distance || 0;
+            document.getElementById('caloriesInput').value = todayData.calories || 0;
+        }
+        
+        function saveExercise(exercise, checked) {
+            const todayData = getTodayData();
+            todayData.exercises[exercise] = checked;
+            saveToStorage();
+        }
+        
+        function saveData(field, value) {
+            const todayData = getTodayData();
+            todayData[field] = value;
+            saveToStorage();
+        }
+        
+        function saveToStorage() {
+            localStorage.setItem('fitnessTrackerData', JSON.stringify(data));
+        }
+        
+        function updateDisplay() {
+            const todayData = getTodayData();
+            
+            // Update water liters
+            const waterLiters = (todayData.water * 0.25).toFixed(1);
+            document.getElementById('waterLiters').textContent = waterLiters;
+            
+            // Update streak
+            const streak = calculateStreak();
+            document.getElementById('streakCount').textContent = streak;
+            document.getElementById('analyticsStreak').textContent = streak;
+            
+            // Update progress
+            updateProgress(todayData);
+            
+            // Update analytics
+            updateAnalytics();
+        }
+        
+        function updateProgress(todayData) {
+            const progressGrid = document.getElementById('progressGrid');
+            const morningCount = Object.values(todayData.exercises).slice(0, 7).filter(v => v).length;
+            const morningComplete = morningCount === 7;
+            const eveningComplete = todayData.exercises.eveningWalk;
+            const waterComplete = todayData.water >= 12;
+            const sleepComplete = todayData.sleep >= 8;
+            
+            progressGrid.innerHTML = `
+                <div class="progress-item ${morningComplete ? 'progress-complete' : 'progress-pending'}">
+                    Morning: ${morningCount}/7
+                </div>
+                <div class="progress-item ${eveningComplete ? 'progress-complete' : 'progress-pending'}">
+                    Evening: ${eveningComplete ? '✅' : '⏳'}
+                </div>
+                <div class="progress-item ${waterComplete ? 'progress-complete' : 'progress-pending'}">
+                    Water: ${(todayData.water * 0.25).toFixed(1)}L
+                </div>
+                <div class="progress-item ${sleepComplete ? 'progress-complete' : 'progress-pending'}">
+                    Sleep: ${todayData.sleep}h
+                </div>
+                <div class="progress-item progress-complete">
+                    Steps: ${todayData.steps.toLocaleString()}
+                </div>
+                <div class="progress-item progress-complete">
+                    ${todayData.distance}km • ${todayData.calories} cal
+                </div>
+            `;
+        }
+        
+        function calculateStreak() {
+            const dates = Object.keys(data).sort().reverse();
+            let streak = 0;
+            
+            for (const date of dates) {
+                const dayData = data[date];
+                if (!dayData) break;
+                
+                const morningComplete = Object.values(dayData.exercises).slice(0, 7).every(v => v);
+                const eveningComplete = dayData.exercises.eveningWalk;
+                
+                if (morningComplete && eveningComplete) {
+                    streak++;
+                } else {
+                    break;
+                }
+            }
+            
+            return streak;
+        }
+        
+        function updateAnalytics() {
+            const dates = Object.keys(data).sort().slice(-7);
+            let completedDays = 0;
+            let totalWater = 0;
+            let totalSleep = 0;
+            
+            dates.forEach(date => {
+                const dayData = data[date];
+                if (dayData) {
+                    const morningComplete = Object.values(dayData.exercises).slice(0, 7).every(v => v);
+                    const eveningComplete = dayData.exercises.eveningWalk;
+                    
+                    if (morningComplete && eveningComplete) {
+                        completedDays++;
+                    }
+                    
+                    totalWater += dayData.water || 0;
+                    totalSleep += dayData.sleep || 0;
+                }
+            });
+            
+            const completionRate = dates.length > 0 ? Math.round((completedDays / dates.length) * 100) : 0;
+            const avgWater = dates.length > 0 ? (totalWater / dates.length * 0.25).toFixed(1) : 0;
+            const avgSleep = dates.length > 0 ? (totalSleep / dates.length).toFixed(1) : 0;
+            
+            document.getElementById('completionRate').textContent = completionRate + '%';
+            document.getElementById('avgWater').textContent = avgWater + 'L';
+            document.getElementById('avgSleep').textContent = avgSleep + 'h';
+        }
+        
+        function switchTab(tab) {
+            currentTab = tab;
+            
+            // Update tab buttons
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            // Show/hide tab content
+            if (tab === 'exercises') {
+                document.getElementById('exercisesTab').classList.remove('hidden');
+                document.getElementById('trackingTab').classList.add('hidden');
+            } else {
+                document.getElementById('exercisesTab').classList.add('hidden');
+                document.getElementById('trackingTab').classList.remove('hidden');
+            }
+        }
+        
+        function showAnalytics() {
+            document.getElementById('mainView').style.display = 'none';
+            document.getElementById('analyticsView').style.display = 'block';
+        }
+        
+        function showMain() {
+            document.getElementById('mainView').style.display = 'block';
+            document.getElementById('analyticsView').style.display = 'none';
+        }
+        
+        // Initialize when page loads
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>
